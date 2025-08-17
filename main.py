@@ -1,7 +1,11 @@
 import requests
+from dotenv import load_dotenv
 import os
 
-TOKEN = "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"
+
+load_dotenv()
+
+TOKEN = os.getenv("TOKEN")
 URL = "https://api.github.com/graphql"
 
 def get_top_repositories():
