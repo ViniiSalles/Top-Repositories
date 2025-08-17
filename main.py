@@ -91,7 +91,7 @@ def main():
         repo_nodes = list_result['data']['search']['nodes']
         print(f"Lista de {len(repo_nodes)} repositórios obtida com sucesso!\n")
 
-        all_repo_data = get_repo_details(GET_REPO_DETAILS_QUERY, repo_node)
+        all_repo_data = get_repo_details(GET_REPO_DETAILS_QUERY, repo_nodes)
  
 
 
