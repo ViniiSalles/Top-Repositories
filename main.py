@@ -10,7 +10,7 @@ load_dotenv()
 GITHUB_TOKEN = os.getenv("TOKEN")
 GITHUB_API_URL = 'https://api.github.com/graphql'
 
-# ### MODIFICADO: Query agora suporta paginação com a variável $afterCursor ###
+
 GET_TOP_REPOS_PAGINATED_QUERY = """
 query GetTopRepos($afterCursor: String) {
   search(query: "is:public sort:stars-desc", type: REPOSITORY, first: 100, after: $afterCursor) {
@@ -73,7 +73,7 @@ def run_graphql_repo_query(query, variables=None):
     else:
         raise Exception(f"Query falhou com o código {response.status_code}:\n{response.text}")
 
-# ### NOVA FUNÇÃO: Gerencia o loop de paginação para buscar a lista de repositórios ###
+
 def get_all_top_repos(total_to_fetch=1000):
     """Busca repositórios em lotes de 100 até atingir o total desejado."""
     all_repo_nodes = []
@@ -102,9 +102,9 @@ def get_all_top_repos(total_to_fetch=1000):
             print("\nNão há mais páginas para buscar. Fim da coleta.")
             break
         
-        time.sleep(0.1) # Pequena pausa para ser gentil com a API
+        time.sleep(0.1) # Pequena pausa entre as requisições 
 
-    print() # Nova linha após a barra de progresso
+    print() 
     return all_repo_nodes[:total_to_fetch]
 
 def get_repo_details(query, data):
@@ -136,7 +136,6 @@ def get_repo_details(query, data):
   print()
   return all_repo_data
 
-# O resto do código (get_repo_metrics, get_df_metrics, etc.) permanece o mesmo...
 
 def get_repo_metrics(repo_data):
     df_data = []
@@ -171,7 +170,7 @@ def get_repo_metrics(repo_data):
     df.to_csv("repo_metrics.csv", index=False)
     return df
 
-# ... (as funções get_df_metrics, metrics_analysis, per_language_analysis não precisam de alteração)
+
 def get_df_metrics():
     df = pd.read_csv("repo_metrics.csv")
     issues_fechadas_por_total = df['issues_fechadas'].sum() / df['total_issues'].sum() if df['total_issues'].sum() > 0 else 0
@@ -264,7 +263,7 @@ def per_language_analysis():
 def main():
     if not os.path.exists("repo_metrics.csv"):
       try:
-          # ### MODIFICADO: Chamando a nova função de paginação para buscar 1000 repositórios ###
+        
           repo_nodes = get_all_top_repos(1000)
           print(f"Lista de {len(repo_nodes)} repositórios obtida com sucesso!\n")
 
@@ -278,7 +277,7 @@ def main():
       except Exception as e:
           print(f"\nOcorreu um erro: {e}")
     
-    # O resto da análise continua igual
+
     if os.path.exists("repo_metrics.csv"):
         df_metrics = get_df_metrics()
         print("\nMétricas dos repositórios obtidas com sucesso a partir do CSV!\n")
@@ -292,7 +291,7 @@ def main():
         print("ANÁLISE COMPLETA FINALIZADA!")
         print("Arquivos gerados:")
         print("- repo_metrics.csv: Dados detalhados de cada repositório")
-        # Removido relatorio_final.md pois não é gerado pelo script
+     
         print("="*80)
     else:
         print("Arquivo repo_metrics.csv não encontrado. Execute o script novamente para gerar os dados.")
