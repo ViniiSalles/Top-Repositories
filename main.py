@@ -56,6 +56,7 @@ query GetRepoDetails($owner: String!, $name: String!) {
 """
 
 def run_graphql_repo_query(query, variables=None):
+  
     if not GITHUB_TOKEN:
         raise Exception("Token do GitHub não encontrado. Configure a variável de ambiente GITHUB_TOKEN.")
 
@@ -108,6 +109,8 @@ def get_all_top_repos(total_to_fetch=1000):
     return all_repo_nodes[:total_to_fetch]
 
 def get_repo_details(query, data):
+"""Busca todo o conteudo solicitado na requisição dos repositorios """
+  
   all_repo_data = []
   total_repos = len(data)
   
@@ -138,6 +141,8 @@ def get_repo_details(query, data):
 
 
 def get_repo_metrics(repo_data):
+""" Busca todos os repositorios monta um dataframe e salva em um csv """
+  
     df_data = []
     for repo in repo_data:
         if not repo: continue # Pula repositórios que podem ter falhado na coleta
@@ -172,6 +177,8 @@ def get_repo_metrics(repo_data):
 
 
 def get_df_metrics():
+  """ Pega dataframe do csv e faz uma analise geral """
+  
     df = pd.read_csv("repo_metrics.csv")
     issues_fechadas_por_total = df['issues_fechadas'].sum() / df['total_issues'].sum() if df['total_issues'].sum() > 0 else 0
     return {
@@ -189,6 +196,8 @@ def get_df_metrics():
     }
 
 def metrics_analysis():
+  """ Faz a analise para cada um dos repositórios do dataframe """
+  
    df = pd.read_csv("repo_metrics.csv")
    print("\n" + "="*80)
    print("ANÁLISE DAS QUESTÕES DE PESQUISA")
@@ -241,6 +250,8 @@ def metrics_analysis():
    return df
 
 def per_language_analysis():
+  """ Analisa as estatísticas categorizando por linguagem  """
+  
    df = pd.read_csv("repo_metrics.csv")
    print("\n" + "="*80)
    print("RQ07: ANÁLISE POR LINGUAGEM (BÔNUS)")
